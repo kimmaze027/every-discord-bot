@@ -84,3 +84,60 @@ pub fn error(message: &str) -> CreateEmbed {
         .description(message)
         .color(0xED4245)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn test_song(title: &str) -> crate::music::Song {
+        crate::music::Song {
+            title: title.to_string(),
+            url: format!("https://example.com/{title}"),
+            duration: Some("3:00".to_string()),
+            requester: "tester".to_string(),
+        }
+    }
+
+    #[test]
+    fn test_now_playing_creates_embed() {
+        let song = test_song("Test Song");
+        let _embed = now_playing(&song);
+        // CreateEmbed is opaque; just verify creation doesn't panic
+    }
+
+    #[test]
+    fn test_added_to_queue_creates_embed() {
+        let song = test_song("Queued Song");
+        let _embed = added_to_queue(&song, 3);
+    }
+
+    #[test]
+    fn test_queue_list_empty() {
+        let _embed = queue_list(None, &[], 1);
+    }
+
+    #[test]
+    fn test_queue_list_with_songs() {
+        let current = test_song("Current");
+        let songs: Vec<crate::music::Song> = vec![
+            test_song("Song 1"),
+            test_song("Song 2"),
+            test_song("Song 3"),
+        ];
+        let _embed = queue_list(Some(&current), &songs, 1);
+    }
+
+    #[test]
+    fn test_queue_list_pagination() {
+        let songs: Vec<crate::music::Song> = (1..=15)
+            .map(|i| test_song(&format!("Song {i}")))
+            .collect();
+        // Page 2 should work without panicking
+        let _embed = queue_list(None, &songs, 2);
+    }
+
+    #[test]
+    fn test_error_embed_creates() {
+        let _embed = error("something went wrong");
+    }
+}
