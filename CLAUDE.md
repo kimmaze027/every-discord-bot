@@ -16,6 +16,12 @@
 - **모든 변경**: `feat/*`, `fix/*`, `hotfix/*` 브랜치 → PR → main 병합
 - PR 없이 main에 직접 푸시하는 것은 어떤 경우에도 허용하지 않음
 
+### CI 통과 필수 병합 (CRITICAL)
+
+- **PR 병합 조건**: 모든 CI 테스트(check, test)가 통과해야만 병합 가능
+- CI가 실패한 PR은 절대 병합하지 않음
+- CI 실패 시: 로그 확인 → 수정 → 재푸시 → CI 재실행 → 통과 후 병합
+
 ```bash
 # 올바른 워크플로우
 git checkout main && git pull origin main
