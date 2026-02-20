@@ -18,8 +18,9 @@ RUN touch src/main.rs && cargo build --release
 # === Runtime stage ===
 FROM debian:bookworm-slim
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    ffmpeg ca-certificates python3 pipx && \
+    ffmpeg ca-certificates python3 pipx curl unzip && \
     pipx install yt-dlp && \
+    curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 ENV PATH="/root/.local/bin:$PATH"
 COPY --from=builder /app/target/release/discord-music-bot /usr/local/bin/
