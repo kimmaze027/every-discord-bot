@@ -23,5 +23,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 ENV PATH="/root/.local/bin:$PATH"
+RUN mkdir -p /root/.config/yt-dlp && \
+    echo "--remote-components ejs:github" > /root/.config/yt-dlp/config
 COPY --from=builder /app/target/release/discord-music-bot /usr/local/bin/
 CMD ["discord-music-bot"]
