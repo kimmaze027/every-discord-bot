@@ -27,10 +27,7 @@ pub(crate) fn parse_yt_dlp_output(
         format!("{mins}:{remaining:02}")
     });
 
-    let url = info
-        .webpage_url
-        .or(info.original_url)
-        .unwrap_or_default();
+    let url = info.webpage_url.or(info.original_url).unwrap_or_default();
 
     Ok(Song {
         title: info.title.unwrap_or_else(|| "알 수 없음".to_string()),
@@ -40,9 +37,7 @@ pub(crate) fn parse_yt_dlp_output(
     })
 }
 
-pub async fn get_song_info(
-    query: &str,
-) -> Result<Song, Box<dyn std::error::Error + Send + Sync>> {
+pub async fn get_song_info(query: &str) -> Result<Song, Box<dyn std::error::Error + Send + Sync>> {
     let search_query = if is_url(query) {
         query.to_string()
     } else {

@@ -8,9 +8,7 @@ async fn pause_impl(ctx: Context<'_>) -> Result<(), Error> {
     let guild_id = ctx.guild_id().ok_or("서버에서만 사용할 수 있습니다")?;
 
     let queues = ctx.data().queue_manager.read().await;
-    let handle = queues
-        .get(&guild_id)
-        .and_then(|q| q.track_handle.as_ref());
+    let handle = queues.get(&guild_id).and_then(|q| q.track_handle.as_ref());
 
     match handle {
         Some(h) => {

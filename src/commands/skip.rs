@@ -46,8 +46,7 @@ async fn skip_impl(ctx: Context<'_>) -> Result<(), Error> {
                 }
                 Err(e) => {
                     ctx.send(
-                        CreateReply::default()
-                            .embed(embed::error(&format!("스킵 실패: {e}"))),
+                        CreateReply::default().embed(embed::error(&format!("스킵 실패: {e}"))),
                     )
                     .await?;
                 }

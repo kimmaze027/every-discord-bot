@@ -129,9 +129,8 @@ mod tests {
 
     #[test]
     fn test_queue_list_pagination() {
-        let songs: Vec<crate::music::Song> = (1..=15)
-            .map(|i| test_song(&format!("Song {i}")))
-            .collect();
+        let songs: Vec<crate::music::Song> =
+            (1..=15).map(|i| test_song(&format!("Song {i}"))).collect();
         // Page 2 should work without panicking
         let _embed = queue_list(None, &songs, 2);
     }

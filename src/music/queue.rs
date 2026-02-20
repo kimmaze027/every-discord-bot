@@ -41,10 +41,16 @@ pub async fn clear(manager: &QueueManager, guild_id: GuildId) {
     }
 }
 
-pub async fn get_queue_list(manager: &QueueManager, guild_id: GuildId) -> (Option<Song>, Vec<Song>) {
+pub async fn get_queue_list(
+    manager: &QueueManager,
+    guild_id: GuildId,
+) -> (Option<Song>, Vec<Song>) {
     let queues = manager.read().await;
     match queues.get(&guild_id) {
-        Some(queue) => (queue.current_song.clone(), queue.songs.iter().cloned().collect()),
+        Some(queue) => (
+            queue.current_song.clone(),
+            queue.songs.iter().cloned().collect(),
+        ),
         None => (None, vec![]),
     }
 }
@@ -61,11 +67,7 @@ pub async fn shuffle(manager: &QueueManager, guild_id: GuildId) -> usize {
     len
 }
 
-pub async fn remove_at(
-    manager: &QueueManager,
-    guild_id: GuildId,
-    position: usize,
-) -> Option<Song> {
+pub async fn remove_at(manager: &QueueManager, guild_id: GuildId, position: usize) -> Option<Song> {
     let mut queues = manager.write().await;
     let queue = queues.entry(guild_id).or_default();
     if position > 0 && position <= queue.songs.len() {
@@ -75,11 +77,7 @@ pub async fn remove_at(
     }
 }
 
-pub async fn set_loop_mode(
-    manager: &QueueManager,
-    guild_id: GuildId,
-    mode: LoopMode,
-) -> LoopMode {
+pub async fn set_loop_mode(manager: &QueueManager, guild_id: GuildId, mode: LoopMode) -> LoopMode {
     let mut queues = manager.write().await;
     let queue = queues.entry(guild_id).or_default();
     queue.loop_mode = mode.clone();
@@ -122,8 +120,8 @@ pub async fn is_empty(manager: &QueueManager, guild_id: GuildId) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use serenity::model::id::GuildId;
     use crate::music::new_queue_manager;
+    use serenity::model::id::GuildId;
 
     fn test_song(title: &str) -> Song {
         Song {

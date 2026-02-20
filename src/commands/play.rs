@@ -18,11 +18,8 @@ async fn play_impl(ctx: Context<'_>, query: String) -> Result<(), Error> {
     let channel_id = match channel_id {
         Some(id) => id,
         None => {
-            ctx.send(
-                CreateReply::default()
-                    .embed(embed::error("음성 채널에 먼저 접속해주세요!")),
-            )
-            .await?;
+            ctx.send(CreateReply::default().embed(embed::error("음성 채널에 먼저 접속해주세요!")))
+                .await?;
             return Ok(());
         }
     };
