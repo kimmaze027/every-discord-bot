@@ -9,7 +9,7 @@ async fn main() {
     dotenvy::dotenv().ok();
     let config = config::Config::from_env();
 
-    let intents = serenity::GatewayIntents::GUILDS | serenity::GatewayIntents::GUILD_VOICE_STATES;
+    let intents = serenity::GatewayIntents::non_privileged();
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
