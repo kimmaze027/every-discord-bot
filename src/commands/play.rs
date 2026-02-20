@@ -1,4 +1,3 @@
-use poise::serenity_prelude as serenity;
 use poise::CreateReply;
 
 use crate::music::{player, queue, source};

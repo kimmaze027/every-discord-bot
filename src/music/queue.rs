@@ -1,6 +1,6 @@
 use serenity::model::id::GuildId;
 
-use super::{GuildQueue, LoopMode, QueueManager, Song};
+use super::{LoopMode, QueueManager, Song};
 
 pub async fn add_song(manager: &QueueManager, guild_id: GuildId, song: Song) -> usize {
     let mut queues = manager.write().await;
