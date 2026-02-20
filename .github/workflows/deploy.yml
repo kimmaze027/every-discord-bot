@@ -17,8 +17,4 @@ jobs:
         env:
           DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
         run: |
-          tailscale ssh -o StrictHostKeyChecking=accept-new "$DEPLOY_USER@aorus" << 'EOF'
-            cd ~/every-discord-bot
-            git pull origin main
-            docker compose up --build -d
-          EOF
+          tailscale ssh "$DEPLOY_USER@aorus" "cd ~/every-discord-bot && git pull origin main && docker compose up --build -d"
