@@ -35,7 +35,7 @@ pub fn queue_list(current: Option<&Song>, songs: &[Song], page: usize) -> Create
     let total_pages = if songs.is_empty() {
         1
     } else {
-        (songs.len() + per_page - 1) / per_page
+        songs.len().div_ceil(per_page)
     };
     let page = page.min(total_pages).max(1);
 
@@ -129,9 +129,8 @@ mod tests {
 
     #[test]
     fn test_queue_list_pagination() {
-        let songs: Vec<crate::music::Song> = (1..=15)
-            .map(|i| test_song(&format!("Song {i}")))
-            .collect();
+        let songs: Vec<crate::music::Song> =
+            (1..=15).map(|i| test_song(&format!("Song {i}"))).collect();
         // Page 2 should work without panicking
         let _embed = queue_list(None, &songs, 2);
     }

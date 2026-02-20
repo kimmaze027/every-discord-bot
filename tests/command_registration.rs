@@ -19,8 +19,28 @@ fn test_all_commands_contain_expected_names() {
     let names: HashSet<&str> = cmds.iter().map(|cmd| cmd.name.as_str()).collect();
 
     let expected = [
-        "play", "p", "skip", "s", "stop", "st", "queue", "q", "pause", "pa", "resume", "r",
-        "nowplaying", "np", "loop", "l", "shuffle", "sh", "remove", "rm", "volume", "v",
+        "play",
+        "p",
+        "skip",
+        "s",
+        "stop",
+        "st",
+        "queue",
+        "q",
+        "pause",
+        "pa",
+        "resume",
+        "r",
+        "nowplaying",
+        "np",
+        "loop",
+        "l",
+        "shuffle",
+        "sh",
+        "remove",
+        "rm",
+        "volume",
+        "v",
     ];
 
     for name in &expected {

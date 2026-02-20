@@ -13,11 +13,9 @@ async fn loop_impl(ctx: Context<'_>, mode: String) -> Result<(), Error> {
         "song" | "곡" | "한곡" => LoopMode::Song,
         "queue" | "큐" | "전체" => LoopMode::Queue,
         _ => {
-            ctx.send(
-                CreateReply::default().embed(embed::error(
-                    "올바른 모드를 선택해주세요: `off`, `song`, `queue`",
-                )),
-            )
+            ctx.send(CreateReply::default().embed(embed::error(
+                "올바른 모드를 선택해주세요: `off`, `song`, `queue`",
+            )))
             .await?;
             return Ok(());
         }

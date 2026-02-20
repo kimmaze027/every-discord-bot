@@ -8,11 +8,8 @@ async fn volume_impl(ctx: Context<'_>, level: u32) -> Result<(), Error> {
     let guild_id = ctx.guild_id().ok_or("서버에서만 사용할 수 있습니다")?;
 
     if level > 100 {
-        ctx.send(
-            CreateReply::default()
-                .embed(embed::error("볼륨은 0~100 사이로 설정해주세요.")),
-        )
-        .await?;
+        ctx.send(CreateReply::default().embed(embed::error("볼륨은 0~100 사이로 설정해주세요.")))
+            .await?;
         return Ok(());
     }
 
@@ -36,8 +33,7 @@ pub async fn volume(
 /// 볼륨을 조절합니다 (/volume 단축)
 #[poise::command(slash_command)]
 pub async fn v(
-    ctx: Context<'_>,
-    #[description = "볼륨 (0-100)"] level: u32,
+    ctx: Context<'_>, #[description = "볼륨 (0-100)"] level: u32
 ) -> Result<(), Error> {
     volume_impl(ctx, level).await
 }
