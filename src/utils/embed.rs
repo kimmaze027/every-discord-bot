@@ -35,7 +35,7 @@ pub fn queue_list(current: Option<&Song>, songs: &[Song], page: usize) -> Create
     let total_pages = if songs.is_empty() {
         1
     } else {
-        (songs.len() + per_page - 1) / per_page
+        songs.len().div_ceil(per_page)
     };
     let page = page.min(total_pages).max(1);
 

@@ -41,7 +41,7 @@ pub async fn handle(
             .values()
             .filter(|vs| {
                 vs.channel_id
-                    .map_or(false, |ch| ch.get() == bot_channel.0.get())
+                    .is_some_and(|ch| ch.get() == bot_channel.0.get())
             })
             .count()
     };

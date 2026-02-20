@@ -114,7 +114,7 @@ pub async fn is_empty(manager: &QueueManager, guild_id: GuildId) -> bool {
     let queues = manager.read().await;
     queues
         .get(&guild_id)
-        .map_or(true, |q| q.current_song.is_none() && q.songs.is_empty())
+        .is_none_or(|q| q.current_song.is_none() && q.songs.is_empty())
 }
 
 #[cfg(test)]
