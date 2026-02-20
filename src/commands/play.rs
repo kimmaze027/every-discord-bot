@@ -71,8 +71,14 @@ async fn play_impl(ctx: Context<'_>, query: String) -> Result<(), Error> {
             .await?;
         }
     } else {
-        ctx.send(CreateReply::default().embed(embed::added_to_queue(&song, position)))
-            .await?;
+        let (_, upcoming) =
+            queue::get_queue_list(&ctx.data().queue_manager, guild_id).await;
+        ctx.send(
+            CreateReply::default()
+                .embed(embed::added_to_queue(&song, position))
+                .components(components::music_components(false, &upcoming)),
+        )
+        .await?;
     }
 
     Ok(())
