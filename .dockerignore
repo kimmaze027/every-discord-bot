@@ -1,0 +1,7 @@
+target/
+.env
+.git/
+.gitignore
+README.md
+*.swp
+.DS_Store
