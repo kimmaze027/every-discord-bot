@@ -60,3 +60,25 @@ pub type QueueManager = Arc<RwLock<HashMap<GuildId, GuildQueue>>>;
 pub fn new_queue_manager() -> QueueManager {
     Arc::new(RwLock::new(HashMap::new()))
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_loop_mode_display() {
+        assert_eq!(LoopMode::Off.to_string(), "끔");
+        assert_eq!(LoopMode::Song.to_string(), "한 곡 반복");
+        assert_eq!(LoopMode::Queue.to_string(), "전체 반복");
+    }
+
+    #[test]
+    fn test_guild_queue_default() {
+        let q = GuildQueue::default();
+        assert!(q.songs.is_empty());
+        assert!(q.current_song.is_none());
+        assert_eq!(q.loop_mode, LoopMode::Off);
+        assert!((q.volume - 0.5).abs() < f32::EPSILON);
+        assert!(q.track_handle.is_none());
+    }
+}

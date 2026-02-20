@@ -1,19 +1,6 @@
-mod commands;
-mod config;
-mod events;
-mod music;
-mod utils;
-
+use discord_music_bot::{commands, config, events, music, Data};
 use poise::serenity_prelude as serenity;
 use songbird::SerenityInit;
-
-pub type Error = Box<dyn std::error::Error + Send + Sync>;
-pub type Context<'a> = poise::Context<'a, Data, Error>;
-
-pub struct Data {
-    pub queue_manager: music::QueueManager,
-    pub http_client: reqwest::Client,
-}
 
 #[tokio::main]
 async fn main() {
