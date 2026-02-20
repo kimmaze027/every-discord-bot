@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use discord_music_bot::commands;
+use every_discord_bot::commands;
 
 #[test]
 fn test_all_commands_returns_correct_count() {

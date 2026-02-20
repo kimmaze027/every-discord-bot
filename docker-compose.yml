@@ -1,7 +1,7 @@
 services:
-  music-bot:
+  everybot:
     build: .
-    container_name: discord-music-bot
+    container_name: every-discord-bot
     restart: unless-stopped
     env_file: .env
     logging:

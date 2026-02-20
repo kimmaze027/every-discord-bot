@@ -1,4 +1,4 @@
-use discord_music_bot::{commands, config, events, music, Data};
+use every_discord_bot::{commands, config, events, music, Data};
 use poise::serenity_prelude as serenity;
 use songbird::SerenityInit;
 

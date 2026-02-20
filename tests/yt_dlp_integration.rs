@@ -1,4 +1,4 @@
-use discord_music_bot::music::source;
+use every_discord_bot::music::source;
 
 #[tokio::test]
 #[ignore] // Requires yt-dlp installed and network access
