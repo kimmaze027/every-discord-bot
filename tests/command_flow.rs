@@ -1,4 +1,4 @@
-use discord_music_bot::music::{self, queue, LoopMode, Song};
+use every_discord_bot::music::{self, queue, LoopMode, Song};
 use serenity::model::id::GuildId;
 
 fn test_song(n: u32) -> Song {

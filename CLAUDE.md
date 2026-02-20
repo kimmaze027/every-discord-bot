@@ -1,8 +1,8 @@
-# Discord Music Bot - Project Rules
+# EveryBot - Project Rules
 
 ## Project Overview
 
-- **Name**: discord-music-bot (every-discord-bot)
+- **Name**: every-discord-bot (EveryBot)
 - **Tech Stack**: Rust (poise 0.6, serenity 0.12, songbird 0.4)
 - **Package Manager**: cargo
 - **Deployment**: Docker (multi-stage build)

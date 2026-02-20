@@ -22,5 +22,5 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     pipx install yt-dlp && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 ENV PATH="/root/.local/bin:$PATH"
-COPY --from=builder /app/target/release/discord-music-bot /usr/local/bin/
-CMD ["discord-music-bot"]
+COPY --from=builder /app/target/release/every-discord-bot /usr/local/bin/
+CMD ["every-discord-bot"]
