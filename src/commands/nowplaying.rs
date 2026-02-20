@@ -18,10 +18,32 @@ async fn nowplaying_impl(ctx: Context<'_>) -> Result<(), Error> {
             e = e.field("반복", format!("{loop_mode}"), true);
             e = e.field("볼륨", format!("{}%", (vol * 100.0) as u32), true);
 
+            let is_paused = {
+                let handle = {
+                    let queues = ctx.data().queue_manager.read().await;
+                    queues
+                        .get(&guild_id)
+                        .and_then(|q| q.track_handle.clone())
+                };
+                match handle {
+                    Some(h) => h
+                        .get_info()
+                        .await
+                        .map(|info| {
+                            info.playing == songbird::tracks::PlayMode::Pause
+                        })
+                        .unwrap_or(false),
+                    None => false,
+                }
+            };
+
+            let (_, upcoming) =
+                queue::get_queue_list(&ctx.data().queue_manager, guild_id).await;
+
             ctx.send(
                 CreateReply::default()
                     .embed(e)
-                    .components(vec![components::music_buttons(false)]),
+                    .components(components::music_components(is_paused, &upcoming)),
             )
             .await?;
         }
