@@ -29,13 +29,13 @@ async fn resume_impl(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// 일시정지된 곡을 재개합니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn resume(ctx: Context<'_>) -> Result<(), Error> {
     resume_impl(ctx).await
 }
 
 /// 일시정지된 곡을 재개합니다 (/resume 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn r(ctx: Context<'_>) -> Result<(), Error> {
     resume_impl(ctx).await
 }

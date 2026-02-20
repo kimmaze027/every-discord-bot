@@ -26,13 +26,13 @@ async fn stop_impl(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// 재생을 중지하고 퇴장합니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn stop(ctx: Context<'_>) -> Result<(), Error> {
     stop_impl(ctx).await
 }
 
 /// 재생을 중지하고 퇴장합니다 (/stop 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn st(ctx: Context<'_>) -> Result<(), Error> {
     stop_impl(ctx).await
 }

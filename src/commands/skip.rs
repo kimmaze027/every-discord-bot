@@ -62,13 +62,13 @@ async fn skip_impl(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// 현재 곡을 건너뜁니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn skip(ctx: Context<'_>) -> Result<(), Error> {
     skip_impl(ctx).await
 }
 
 /// 현재 곡을 건너뜁니다 (/skip 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn s(ctx: Context<'_>) -> Result<(), Error> {
     skip_impl(ctx).await
 }

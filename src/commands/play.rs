@@ -73,7 +73,7 @@ async fn play_impl(ctx: Context<'_>, query: String) -> Result<(), Error> {
 }
 
 /// 음악을 재생합니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn play(
     ctx: Context<'_>,
     #[description = "노래 제목 또는 URL"] query: String,
@@ -82,7 +82,7 @@ pub async fn play(
 }
 
 /// 음악을 재생합니다 (/play 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn p(
     ctx: Context<'_>,
     #[description = "노래 제목 또는 URL"] query: String,

@@ -20,13 +20,13 @@ async fn shuffle_impl(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// 큐를 셔플합니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn shuffle(ctx: Context<'_>) -> Result<(), Error> {
     shuffle_impl(ctx).await
 }
 
 /// 큐를 셔플합니다 (/shuffle 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn sh(ctx: Context<'_>) -> Result<(), Error> {
     shuffle_impl(ctx).await
 }

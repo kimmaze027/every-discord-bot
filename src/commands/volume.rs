@@ -22,7 +22,7 @@ async fn volume_impl(ctx: Context<'_>, level: u32) -> Result<(), Error> {
 }
 
 /// 볼륨을 조절합니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn volume(
     ctx: Context<'_>,
     #[description = "볼륨 (0-100)"] level: u32,
@@ -31,7 +31,7 @@ pub async fn volume(
 }
 
 /// 볼륨을 조절합니다 (/volume 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn v(
     ctx: Context<'_>, #[description = "볼륨 (0-100)"] level: u32
 ) -> Result<(), Error> {

@@ -27,7 +27,7 @@ async fn remove_impl(ctx: Context<'_>, position: usize) -> Result<(), Error> {
 }
 
 /// 큐에서 곡을 제거합니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn remove(
     ctx: Context<'_>,
     #[description = "제거할 곡 번호"] position: usize,
@@ -36,7 +36,7 @@ pub async fn remove(
 }
 
 /// 큐에서 곡을 제거합니다 (/remove 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn rm(
     ctx: Context<'_>,
     #[description = "제거할 곡 번호"] position: usize,

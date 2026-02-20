@@ -30,13 +30,13 @@ async fn nowplaying_impl(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// 현재 재생 중인 곡 정보를 표시합니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn nowplaying(ctx: Context<'_>) -> Result<(), Error> {
     nowplaying_impl(ctx).await
 }
 
 /// 현재 재생 중인 곡 정보를 표시합니다 (/nowplaying 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn np(ctx: Context<'_>) -> Result<(), Error> {
     nowplaying_impl(ctx).await
 }

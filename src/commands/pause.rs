@@ -29,13 +29,13 @@ async fn pause_impl(ctx: Context<'_>) -> Result<(), Error> {
 }
 
 /// 현재 곡을 일시정지합니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn pause(ctx: Context<'_>) -> Result<(), Error> {
     pause_impl(ctx).await
 }
 
 /// 현재 곡을 일시정지합니다 (/pause 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn pa(ctx: Context<'_>) -> Result<(), Error> {
     pause_impl(ctx).await
 }

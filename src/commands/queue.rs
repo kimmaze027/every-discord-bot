@@ -18,7 +18,7 @@ async fn queue_impl(ctx: Context<'_>, page: Option<usize>) -> Result<(), Error> 
 }
 
 /// 재생 목록을 표시합니다
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn queue(
     ctx: Context<'_>,
     #[description = "페이지 번호"] page: Option<usize>,
@@ -27,7 +27,7 @@ pub async fn queue(
 }
 
 /// 재생 목록을 표시합니다 (/queue 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn q(
     ctx: Context<'_>,
     #[description = "페이지 번호"] page: Option<usize>,

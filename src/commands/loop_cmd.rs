@@ -35,7 +35,7 @@ async fn loop_impl(ctx: Context<'_>, mode: String) -> Result<(), Error> {
 }
 
 /// 반복 모드를 설정합니다
-#[poise::command(slash_command, rename = "loop")]
+#[poise::command(slash_command, guild_only, rename = "loop")]
 pub async fn loop_cmd(
     ctx: Context<'_>,
     #[description = "반복 모드 (off/song/queue)"] mode: String,
@@ -44,7 +44,7 @@ pub async fn loop_cmd(
 }
 
 /// 반복 모드를 설정합니다 (/loop 단축)
-#[poise::command(slash_command)]
+#[poise::command(slash_command, guild_only)]
 pub async fn l(
     ctx: Context<'_>,
     #[description = "반복 모드 (off/song/queue)"] mode: String,
