@@ -9,8 +9,8 @@ async fn main() {
     dotenvy::dotenv().ok();
     let config = config::Config::from_env();
 
-    let intents = serenity::GatewayIntents::non_privileged()
-        | serenity::GatewayIntents::GUILD_MEMBERS;
+    let intents =
+        serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::GUILD_MEMBERS;
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
