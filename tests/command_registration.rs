@@ -7,8 +7,8 @@ fn test_all_commands_returns_correct_count() {
     let cmds = commands::all();
     assert_eq!(
         cmds.len(),
-        22,
-        "Expected 22 commands (11 main + 11 aliases), got {}",
+        42,
+        "Expected 42 commands (11 music + 11 aliases + 10 tarkov + 10 aliases), got {}",
         cmds.len()
     );
 }
@@ -41,6 +41,30 @@ fn test_all_commands_contain_expected_names() {
         "rm",
         "volume",
         "v",
+        // Tarkov commands (Phase 3)
+        "item",
+        "아이템",
+        "price",
+        "가격",
+        "ammo",
+        "탄약",
+        // Tarkov commands (Phase 4)
+        "trader",
+        "상인",
+        "quest",
+        "퀘스트",
+        "questitem",
+        "퀘스트아이템",
+        // Tarkov commands (Phase 5)
+        "hideout",
+        "은신처",
+        "craft",
+        "제작",
+        // Tarkov commands (Phase 6)
+        "map",
+        "맵",
+        "boss",
+        "보스",
     ];
 
     for name in &expected {

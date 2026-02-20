@@ -41,9 +41,7 @@ async fn update_message(
 async fn is_track_paused(data: &Data, guild_id: GuildId) -> bool {
     let handle = {
         let queues = data.queue_manager.read().await;
-        queues
-            .get(&guild_id)
-            .and_then(|q| q.track_handle.clone())
+        queues.get(&guild_id).and_then(|q| q.track_handle.clone())
     };
     match handle {
         Some(h) => h
@@ -103,10 +101,7 @@ pub async fn handle(
     match interaction.data.custom_id.as_str() {
         "music_pause" => {
             let queues = data.queue_manager.read().await;
-            if let Some(h) = queues
-                .get(&guild_id)
-                .and_then(|q| q.track_handle.as_ref())
-            {
+            if let Some(h) = queues.get(&guild_id).and_then(|q| q.track_handle.as_ref()) {
                 let _ = h.pause();
             }
             drop(queues);
@@ -127,10 +122,7 @@ pub async fn handle(
         }
         "music_resume" => {
             let queues = data.queue_manager.read().await;
-            if let Some(h) = queues
-                .get(&guild_id)
-                .and_then(|q| q.track_handle.as_ref())
-            {
+            if let Some(h) = queues.get(&guild_id).and_then(|q| q.track_handle.as_ref()) {
                 let _ = h.play();
             }
             drop(queues);
@@ -154,13 +146,8 @@ pub async fn handle(
                 Some(c) => c,
                 None => {
                     let e = embed::error("재생 중인 곡이 없습니다.");
-                    update_message(
-                        ctx,
-                        interaction,
-                        e,
-                        components::music_components_disabled(),
-                    )
-                    .await?;
+                    update_message(ctx, interaction, e, components::music_components_disabled())
+                        .await?;
                     return Ok(());
                 }
             };
@@ -176,8 +163,7 @@ pub async fn handle(
             {
                 Ok(()) => {
                     let next = queue::get_current(&data.queue_manager, guild_id).await;
-                    let (_, upcoming) =
-                        queue::get_queue_list(&data.queue_manager, guild_id).await;
+                    let (_, upcoming) = queue::get_queue_list(&data.queue_manager, guild_id).await;
                     let (e, comps) = match next {
                         Some(song) => (
                             embed::now_playing(&song),
