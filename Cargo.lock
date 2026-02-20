@@ -558,7 +558,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "discord-music-bot"
+name = "every-discord-bot"
 version = "0.1.0"
 dependencies = [
  "async-trait",
