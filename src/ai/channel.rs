@@ -187,6 +187,56 @@ struct ItemsResponse {
     items: Vec<crate::tarkov::models::Item>,
 }
 
+/// 카탈로그 매칭 우선, fallback으로 API 직접 조회
+async fn try_find_item(
+    client: &reqwest::Client,
+    cache: &crate::tarkov::client::Cache,
+    catalog: Option<&crate::tarkov::catalog::ItemCatalog>,
+    name: &str,
+) -> Option<crate::tarkov::models::Item> {
+    // 1단계: 카탈로그에서 공식 이름 매칭
+    let search_name = if let Some(cat) = catalog {
+        match cat.find_match(name) {
+            Some(entry) => entry.name,
+            None => name.to_string(),
+        }
+    } else {
+        name.to_string()
+    };
+
+    // 2단계: 공식 이름으로 가격 API 호출
+    if let Ok(resp) = crate::tarkov::client::query::<ItemsResponse>(
+        client,
+        cache,
+        crate::tarkov::queries::ITEMS_QUERY,
+        &serde_json::json!({"name": search_name, "lang": "en"}),
+    )
+    .await
+    {
+        if !resp.items.is_empty() {
+            return Some(resp.items.into_iter().next().unwrap());
+        }
+    }
+
+    // 3단계: fallback — 원본 이름으로도 시도 (카탈로그 매칭과 다른 경우만)
+    if search_name != name {
+        if let Ok(resp) = crate::tarkov::client::query::<ItemsResponse>(
+            client,
+            cache,
+            crate::tarkov::queries::ITEMS_QUERY,
+            &serde_json::json!({"name": name, "lang": "en"}),
+        )
+        .await
+        {
+            if !resp.items.is_empty() {
+                return Some(resp.items.into_iter().next().unwrap());
+            }
+        }
+    }
+
+    None
+}
+
 /// 숫자를 쉼표로 구분된 문자열로 변환
 fn format_number(n: i64) -> String {
     if n == 0 {
@@ -284,16 +334,15 @@ async fn handle_image(
     let mut total: i64 = 0;
 
     for item_info in &identified {
-        match crate::tarkov::client::query::<ItemsResponse>(
+        match try_find_item(
             &data.http_client,
             &data.tarkov_cache,
-            crate::tarkov::queries::ITEMS_QUERY,
-            &serde_json::json!({"name": item_info.name, "lang": "en"}),
+            data.item_catalog.as_deref(),
+            &item_info.name,
         )
         .await
         {
-            Ok(resp) if !resp.items.is_empty() => {
-                let best = &resp.items[0];
+            Some(best) => {
                 let price = best.avg24h_price.unwrap_or(best.base_price);
                 let item_total = price * item_info.qty as i64;
                 total += item_total;
@@ -310,7 +359,7 @@ async fn handle_image(
                     lines.push(format!("- {} — {}₽", best.name, format_number(price)));
                 }
             }
-            _ => {
+            None => {
                 lines.push(format!("- {} — 가격 조회 실패", item_info.name));
             }
         }

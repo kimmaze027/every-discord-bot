@@ -17,4 +17,5 @@ pub struct Data {
     pub tv_channel_id: Option<u64>,
     pub chat_db: Option<ai::db::ChatDb>,
     pub pending_queries: ai::PendingQueries,
+    pub item_catalog: Option<std::sync::Arc<tarkov::catalog::ItemCatalog>>,
 }
