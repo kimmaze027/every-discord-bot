@@ -72,8 +72,21 @@ fn extract_query(content: &str, bot_id: serenity::UserId) -> String {
     let trimmed = raw.trim();
 
     const SUFFIXES: &[&str] = &[
-        "가격", "시세", "정보", "어디", "뭐야", "알려줘", "검색", "찾아줘", "얼마",
-        "어때", "좀", "가격이", "가격은", "시세는", "정보는",
+        "가격",
+        "시세",
+        "정보",
+        "어디",
+        "뭐야",
+        "알려줘",
+        "검색",
+        "찾아줘",
+        "얼마",
+        "어때",
+        "좀",
+        "가격이",
+        "가격은",
+        "시세는",
+        "정보는",
     ];
 
     let mut query = trimmed.to_string();
@@ -159,7 +172,12 @@ async fn handle_pending_selection(
 fn format_item_choices(items: &[crate::tarkov::models::Item]) -> String {
     let mut text = String::from("**여러 아이템이 검색되었습니다. 번호를 입력해주세요:**\n");
     for (i, item) in items.iter().enumerate().take(10) {
-        text.push_str(&format!("**{}**. {} ({})\n", i + 1, item.name, item.short_name));
+        text.push_str(&format!(
+            "**{}**. {} ({})\n",
+            i + 1,
+            item.name,
+            item.short_name
+        ));
     }
     text
 }
@@ -222,48 +240,44 @@ async fn handle_image(
     let _typing = msg.channel_id.start_typing(&ctx.http);
 
     // 1단계: Gemini로 아이템 목록 식별
-    let identified = match super::gemini::identify_items(
-        &data.http_client,
-        api_key,
-        &image_bytes,
-        mime_type,
-    )
-    .await
-    {
-        Ok(items) if !items.is_empty() => items,
-        Ok(_) | Err(_) => {
-            // 아이템 식별 실패 시 일반 이미지 분석으로 fallback
-            let user_text = if msg.content.is_empty() {
-                None
-            } else {
-                Some(msg.content.as_str())
-            };
-            match super::gemini::analyze_image(
-                &data.http_client,
-                api_key,
-                &image_bytes,
-                mime_type,
-                user_text,
-            )
+    let identified =
+        match super::gemini::identify_items(&data.http_client, api_key, &image_bytes, mime_type)
             .await
-            {
-                Ok(response) => {
-                    let response = truncate_for_discord(&response);
-                    msg.channel_id.say(&ctx.http, &response).await?;
-                    db.insert_message(
-                        channel_id_str,
-                        &ctx.cache.current_user().id.to_string(),
-                        "EveryBot",
-                        &response,
-                        true,
-                        false,
-                    )?;
+        {
+            Ok(items) if !items.is_empty() => items,
+            Ok(_) | Err(_) => {
+                // 아이템 식별 실패 시 일반 이미지 분석으로 fallback
+                let user_text = if msg.content.is_empty() {
+                    None
+                } else {
+                    Some(msg.content.as_str())
+                };
+                match super::gemini::analyze_image(
+                    &data.http_client,
+                    api_key,
+                    &image_bytes,
+                    mime_type,
+                    user_text,
+                )
+                .await
+                {
+                    Ok(response) => {
+                        let response = truncate_for_discord(&response);
+                        msg.channel_id.say(&ctx.http, &response).await?;
+                        db.insert_message(
+                            channel_id_str,
+                            &ctx.cache.current_user().id.to_string(),
+                            "EveryBot",
+                            &response,
+                            true,
+                            false,
+                        )?;
+                    }
+                    Err(e) => tracing::error!("Gemini 이미지 분석 오류: {e}"),
                 }
-                Err(e) => tracing::error!("Gemini 이미지 분석 오류: {e}"),
+                return Ok(());
             }
-            return Ok(());
-        }
-    };
+        };
 
     // 2단계: 각 아이템 tarkov.dev API로 가격 조회
     let mut lines: Vec<String> = Vec::new();
@@ -287,7 +301,10 @@ async fn handle_image(
                 if item_info.qty > 1 {
                     lines.push(format!(
                         "- {} x{} — {}₽ (개당 {}₽)",
-                        best.name, item_info.qty, format_number(item_total), format_number(price)
+                        best.name,
+                        item_info.qty,
+                        format_number(item_total),
+                        format_number(price)
                     ));
                 } else {
                     lines.push(format!("- {} — {}₽", best.name, format_number(price)));
