@@ -7,8 +7,8 @@ fn test_all_commands_returns_correct_count() {
     let cmds = commands::all();
     assert_eq!(
         cmds.len(),
-        42,
-        "Expected 42 commands (11 music + 11 aliases + 10 tarkov + 10 aliases), got {}",
+        43,
+        "Expected 43 commands (1 help + 11 music + 11 aliases + 10 tarkov + 10 aliases), got {}",
         cmds.len()
     );
 }
@@ -19,6 +19,7 @@ fn test_all_commands_contain_expected_names() {
     let names: HashSet<&str> = cmds.iter().map(|cmd| cmd.name.as_str()).collect();
 
     let expected = [
+        "help",
         "play",
         "p",
         "skip",
