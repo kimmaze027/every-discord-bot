@@ -21,24 +21,19 @@ async fn nowplaying_impl(ctx: Context<'_>) -> Result<(), Error> {
             let is_paused = {
                 let handle = {
                     let queues = ctx.data().queue_manager.read().await;
-                    queues
-                        .get(&guild_id)
-                        .and_then(|q| q.track_handle.clone())
+                    queues.get(&guild_id).and_then(|q| q.track_handle.clone())
                 };
                 match handle {
                     Some(h) => h
                         .get_info()
                         .await
-                        .map(|info| {
-                            info.playing == songbird::tracks::PlayMode::Pause
-                        })
+                        .map(|info| info.playing == songbird::tracks::PlayMode::Pause)
                         .unwrap_or(false),
                     None => false,
                 }
             };
 
-            let (_, upcoming) =
-                queue::get_queue_list(&ctx.data().queue_manager, guild_id).await;
+            let (_, upcoming) = queue::get_queue_list(&ctx.data().queue_manager, guild_id).await;
 
             ctx.send(
                 CreateReply::default()

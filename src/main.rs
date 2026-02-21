@@ -1,4 +1,4 @@
-use every_discord_bot::{commands, config, events, music, Data};
+use every_discord_bot::{commands, config, events, music, tarkov, Data};
 use poise::serenity_prelude as serenity;
 use songbird::SerenityInit;
 
@@ -27,6 +27,7 @@ async fn main() {
                 Ok(Data {
                     queue_manager: music::new_queue_manager(),
                     http_client: reqwest::Client::new(),
+                    tarkov_cache: tarkov::new_cache(),
                 })
             })
         })

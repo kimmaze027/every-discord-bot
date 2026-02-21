@@ -8,12 +8,13 @@ mod resume;
 mod shuffle;
 mod skip;
 mod stop;
+pub mod tarkov;
 mod volume;
 
 use crate::{Data, Error};
 
 pub fn all() -> Vec<poise::Command<Data, Error>> {
-    vec![
+    let mut cmds = vec![
         play::play(),
         play::p(),
         skip::skip(),
@@ -36,5 +37,7 @@ pub fn all() -> Vec<poise::Command<Data, Error>> {
         remove::rm(),
         volume::volume(),
         volume::v(),
-    ]
+    ];
+    cmds.extend(tarkov::all());
+    cmds
 }
