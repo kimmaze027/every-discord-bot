@@ -1,7 +1,7 @@
 use poise::CreateReply;
 
 use crate::music::{player, queue, source};
-use crate::utils::embed;
+use crate::utils::{components, embed};
 use crate::{Context, Error};
 
 async fn play_impl(ctx: Context<'_>, query: String) -> Result<(), Error> {
@@ -61,12 +61,24 @@ async fn play_impl(ctx: Context<'_>, query: String) -> Result<(), Error> {
             )
             .await?;
 
-            ctx.send(CreateReply::default().embed(embed::now_playing(&song)))
-                .await?;
+            let (_, upcoming) =
+                queue::get_queue_list(&ctx.data().queue_manager, guild_id).await;
+            ctx.send(
+                CreateReply::default()
+                    .embed(embed::now_playing(&song))
+                    .components(components::music_components(false, &upcoming)),
+            )
+            .await?;
         }
     } else {
-        ctx.send(CreateReply::default().embed(embed::added_to_queue(&song, position)))
-            .await?;
+        let (_, upcoming) =
+            queue::get_queue_list(&ctx.data().queue_manager, guild_id).await;
+        ctx.send(
+            CreateReply::default()
+                .embed(embed::added_to_queue(&song, position))
+                .components(components::music_components(false, &upcoming)),
+        )
+        .await?;
     }
 
     Ok(())
