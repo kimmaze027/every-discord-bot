@@ -1,3 +1,4 @@
+pub mod ai;
 pub mod commands;
 pub mod config;
 pub mod events;
@@ -12,4 +13,9 @@ pub struct Data {
     pub queue_manager: music::QueueManager,
     pub http_client: reqwest::Client,
     pub tarkov_cache: tarkov::Cache,
+    pub gemini_api_key: Option<String>,
+    pub tv_channel_id: Option<u64>,
+    pub chat_db: Option<ai::db::ChatDb>,
+    pub pending_queries: ai::PendingQueries,
+    pub item_catalog: Option<std::sync::Arc<tarkov::catalog::ItemCatalog>>,
 }

@@ -1,3 +1,4 @@
+pub mod catalog;
 pub mod client;
 pub mod embed;
 pub mod models;

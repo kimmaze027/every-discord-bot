@@ -88,6 +88,14 @@ query SearchHideout($lang: LanguageCode) {
 }
 "#;
 
+pub const ALL_ITEMS_QUERY: &str = r#"
+query AllItems($lang: LanguageCode) {
+    items(lang: $lang) {
+        id name shortName
+    }
+}
+"#;
+
 pub const CRAFTS_QUERY: &str = r#"
 query SearchCrafts($lang: LanguageCode) {
     crafts(lang: $lang) {
