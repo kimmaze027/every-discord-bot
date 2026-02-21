@@ -58,6 +58,15 @@ pub async fn handle(
     interaction: &ComponentInteraction,
     data: &Data,
 ) -> Result<(), Error> {
+    let custom_id = interaction.data.custom_id.as_str();
+
+    // Tarkov interactions are handled by each command's ComponentInteractionCollector.
+    // Do NOT respond here — the collector will pick them up.
+    if custom_id.starts_with("tarkov_") {
+        return Ok(());
+    }
+
+    // Music interactions require voice channel checks.
     let guild_id = interaction
         .guild_id
         .ok_or("서버에서만 사용할 수 있습니다")?;
@@ -98,7 +107,7 @@ pub async fn handle(
         return Ok(());
     }
 
-    match interaction.data.custom_id.as_str() {
+    match custom_id {
         "music_pause" => {
             let queues = data.queue_manager.read().await;
             if let Some(h) = queues.get(&guild_id).and_then(|q| q.track_handle.as_ref()) {
