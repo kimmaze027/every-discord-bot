@@ -12,6 +12,9 @@ pub async fn handler(
     data: &Data,
 ) -> Result<(), Error> {
     match event {
+        serenity::FullEvent::Message { new_message } => {
+            crate::ai::channel::handle(ctx, new_message, data).await?;
+        }
         serenity::FullEvent::VoiceStateUpdate { old, new } => {
             voice_state::handle(ctx, old, new, data).await?;
         }

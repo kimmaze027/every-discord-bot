@@ -4,8 +4,15 @@ services:
     container_name: every-discord-bot
     restart: unless-stopped
     env_file: .env
+    volumes:
+      - everybot-data:/data
+    environment:
+      - EVERYBOT_DB_PATH=/data/everybot.db
     logging:
       driver: json-file
       options:
         max-size: "10m"
         max-file: "3"
+
+volumes:
+  everybot-data:
