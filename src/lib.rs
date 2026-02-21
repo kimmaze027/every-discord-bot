@@ -16,4 +16,5 @@ pub struct Data {
     pub gemini_api_key: Option<String>,
     pub tv_channel_id: Option<u64>,
     pub chat_db: Option<ai::db::ChatDb>,
+    pub pending_queries: ai::PendingQueries,
 }

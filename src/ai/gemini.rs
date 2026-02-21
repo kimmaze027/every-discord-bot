@@ -7,22 +7,34 @@ const API_URL: &str =
 
 const SYSTEM_PROMPT: &str = "\
 당신은 EveryBot, Escape from Tarkov 전문 디스코드 봇입니다.
-모든 대화를 Escape from Tarkov 게임 맥락에서 해석하고 답변하세요.
+모든 대화를 타르코프 맥락에서 해석하세요.
 
-아이템 관련 질문 시:
-- tarkov.dev API 검색 결과가 함께 제공되면, 그 실시간 데이터를 기반으로 정확한 가격과 정보를 알려주세요.
-- 검색 결과에 여러 아이템이 있으면, 각각의 차이점과 가격을 비교해서 알려주세요.
-- API 데이터가 없으면 알고 있는 일반적인 정보로 답변하되, 정확한 가격은 확인이 필요하다고 안내하세요.
-
-전략, 맵, 퀘스트, 탄약, 무기, 보스, 은신처 등 타르코프 관련 지식을 활용하세요.
-최근 채팅 맥락을 참고하여 자연스럽게 대화하세요.
-한국어로 응답하세요.";
+규칙:
+- 최대한 짧고 간결하게 답변. 2~3문장 이내.
+- tarkov.dev API 데이터가 제공되면 그 데이터만 기반으로 답변.
+- 여러 아이템이면 이름과 가격만 간단히 비교.
+- API 데이터 없으면 아는 정보로 짧게 답변.
+- 한국어로 응답.";
 
 const IMAGE_SYSTEM_PROMPT: &str = "\
 당신은 EveryBot, Escape from Tarkov 전문 디스코드 봇입니다.
-사용자가 이미지를 보냈습니다. 타르코프 관련 이미지(인벤토리, 전리품, 맵, 탄약표 등)라면 아이템을 식별하고 대략적인 가치와 활용법을 분석해주세요.
-타르코프와 무관한 이미지라도 가능하면 타르코프에 연관지어 재미있게 설명해주세요.
-한국어로 응답하세요.";
+이미지를 분석하세요. 타르코프 관련이면 아이템 식별과 가치를 간단히 알려주세요.
+짧고 간결하게 답변. 한국어로 응답.";
+
+const IMAGE_IDENTIFY_PROMPT: &str = "\
+당신은 Escape from Tarkov 아이템 식별 전문가입니다.
+이미지에서 보이는 모든 타르코프 아이템을 식별하세요.
+
+규칙:
+- 총기는 부품 분해 없이 총기 이름만 (예: \"AK-74N\", \"M4A1\")
+- 가방/컨테이너 안의 아이템은 하나하나 모두 리스팅
+- 탄약은 탄약 이름 (예: \"7.62x39mm PS gzh\")
+- 방어구는 이름 (예: \"6B47 Ratnik-BSh helmet\")
+- 아이템 이름은 반드시 tarkov.dev에서 검색 가능한 영문 정식 명칭 사용
+- 같은 아이템이 여러 개면 수량 표기 (예: \"Matches x2\")
+
+반드시 아래 JSON 형식으로만 응답하세요. 다른 텍스트 없이 JSON만:
+[{\"name\": \"아이템 영문명\", \"qty\": 수량}, ...]";
 
 #[derive(Debug)]
 pub enum GeminiError {
@@ -187,6 +199,59 @@ pub async fn chat(
     let response: Response = resp.json().await?;
 
     extract_text(response)?.ok_or_else(|| GeminiError::Api("빈 응답".to_string()))
+}
+
+/// 이미지에서 타르코프 아이템 목록을 JSON으로 추출.
+pub async fn identify_items(
+    client: &reqwest::Client,
+    api_key: &str,
+    image_bytes: &[u8],
+    mime_type: &str,
+) -> Result<Vec<IdentifiedItem>, GeminiError> {
+    let b64 = base64::engine::general_purpose::STANDARD.encode(image_bytes);
+
+    let request = Request {
+        system_instruction: Some(Content {
+            role: None,
+            parts: vec![Part::Text {
+                text: IMAGE_IDENTIFY_PROMPT.to_string(),
+            }],
+        }),
+        contents: vec![Content {
+            role: Some("user".to_string()),
+            parts: vec![Part::InlineData {
+                inline_data: InlineData {
+                    mime_type: mime_type.to_string(),
+                    data: b64,
+                },
+            }],
+        }],
+    };
+
+    let resp = client
+        .post(format!("{API_URL}?key={api_key}"))
+        .json(&request)
+        .send()
+        .await?;
+
+    let response: Response = resp.json().await?;
+    let text = extract_text(response)?.unwrap_or_default();
+
+    // JSON 파싱 (마크다운 코드블록 제거)
+    let json_str = text
+        .trim()
+        .trim_start_matches("```json")
+        .trim_start_matches("```")
+        .trim_end_matches("```")
+        .trim();
+
+    serde_json::from_str(json_str).map_err(|e| GeminiError::Api(format!("JSON 파싱 실패: {e}")))
+}
+
+#[derive(Deserialize, Clone)]
+pub struct IdentifiedItem {
+    pub name: String,
+    pub qty: u32,
 }
 
 /// 이미지를 분석하여 설명을 반환. 항상 응답 (SKIP 불가).

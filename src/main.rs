@@ -51,6 +51,7 @@ async fn main() {
                     gemini_api_key,
                     tv_channel_id,
                     chat_db,
+                    pending_queries: ai::new_pending_queries(),
                 })
             })
         })
